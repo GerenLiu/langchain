@@ -89,7 +89,7 @@ class ChatAgent(Agent):
                 system_message_suffix,
             ]
         )
-        if "ERNIE" in llm.model_name:
+        if hasattr(llm, "model_name") and "ERNIE" in llm.model_name:
             messages = [
                 HumanMessagePromptTemplate.from_template(template),
                 AIMessagePromptTemplate.from_template("YES, I Know."),

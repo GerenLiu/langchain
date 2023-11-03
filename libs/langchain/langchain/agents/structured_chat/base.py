@@ -92,7 +92,7 @@ class StructuredChatAgent(Agent):
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         _memory_prompts = memory_prompts or []
-        if "ERNIE" in llm.model_name:
+        if hasattr(llm, "model_name") and "ERNIE" in llm.model_name:
             messages = [
                 HumanMessagePromptTemplate.from_template(template),
                 AIMessagePromptTemplate.from_template("YES, I Know."),

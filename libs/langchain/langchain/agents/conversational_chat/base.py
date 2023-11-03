@@ -79,7 +79,7 @@ class ConversationalChatAgent(Agent):
         )
         if input_variables is None:
             input_variables = ["input", "chat_history", "agent_scratchpad"]
-        if "ERNIE" in llm.model_name:
+        if hasattr(llm, "model_name") and "ERNIE" in llm.model_name:
             messages = [
                 HumanMessagePromptTemplate.from_template(system_message),
                 AIMessagePromptTemplate.from_template("YES, I Know."),
