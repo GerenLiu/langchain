@@ -92,7 +92,6 @@ class StructuredChatAgent(Agent):
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         _memory_prompts = memory_prompts or []
-        
         if "ERNIE" in llm.model_name:
             messages = [
                 HumanMessagePromptTemplate.from_template(template),

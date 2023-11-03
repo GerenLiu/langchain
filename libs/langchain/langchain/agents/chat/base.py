@@ -89,7 +89,6 @@ class ChatAgent(Agent):
                 system_message_suffix,
             ]
         )
-
         if "ERNIE" in llm.model_name:
             messages = [
                 HumanMessagePromptTemplate.from_template(template),
