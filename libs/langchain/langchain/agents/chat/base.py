@@ -70,8 +70,8 @@ class ChatAgent(Agent):
     @classmethod
     def create_prompt(
         cls,
-        llm: BaseLanguageModel,
         tools: Sequence[BaseTool],
+        llm: BaseLanguageModel,
         system_message_prefix: str = SYSTEM_MESSAGE_PREFIX,
         system_message_suffix: str = SYSTEM_MESSAGE_SUFFIX,
         human_message: str = HUMAN_MESSAGE,
@@ -121,8 +121,8 @@ class ChatAgent(Agent):
         """Construct an agent from an LLM and tools."""
         cls._validate_tools(tools)
         prompt = cls.create_prompt(
-            llm,
             tools,
+            llm,
             system_message_prefix=system_message_prefix,
             system_message_suffix=system_message_suffix,
             human_message=human_message,

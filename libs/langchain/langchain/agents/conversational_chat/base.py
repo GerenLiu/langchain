@@ -59,8 +59,8 @@ class ConversationalChatAgent(Agent):
     @classmethod
     def create_prompt(
         cls,
-        llm: BaseLanguageModel,
         tools: Sequence[BaseTool],
+        llm: BaseLanguageModel,
         system_message: str = PREFIX,
         human_message: str = SUFFIX,
         input_variables: Optional[List[str]] = None,
@@ -125,8 +125,8 @@ class ConversationalChatAgent(Agent):
         cls._validate_tools(tools)
         _output_parser = output_parser or cls._get_default_output_parser()
         prompt = cls.create_prompt(
-            llm,
             tools,
+            llm,
             system_message=system_message,
             human_message=human_message,
             input_variables=input_variables,

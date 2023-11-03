@@ -72,8 +72,8 @@ class StructuredChatAgent(Agent):
     @classmethod
     def create_prompt(
         cls,
-        llm: BaseLanguageModel,
         tools: Sequence[BaseTool],
+        llm: BaseLanguageModel,
         prefix: str = PREFIX,
         suffix: str = SUFFIX,
         human_message_template: str = HUMAN_MESSAGE_TEMPLATE,
