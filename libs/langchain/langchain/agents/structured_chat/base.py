@@ -9,10 +9,10 @@ from langchain.agents.structured_chat.prompt import FORMAT_INSTRUCTIONS, PREFIX,
 from langchain.callbacks.base import BaseCallbackManager
 from langchain.chains.llm import LLMChain
 from langchain.prompts.chat import (
+    AIMessagePromptTemplate,
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
-    AIMessagePromptTemplate,
 )
 from langchain.pydantic_v1 import Field
 from langchain.schema import AgentAction, BasePromptTemplate

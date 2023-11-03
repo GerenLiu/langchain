@@ -12,10 +12,10 @@ from langchain.agents.utils import validate_tools_single_input
 from langchain.callbacks.base import BaseCallbackManager
 from langchain.chains.llm import LLMChain
 from langchain.prompts.chat import (
+    AIMessagePromptTemplate,
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
-    AIMessagePromptTemplate,
 )
 from langchain.pydantic_v1 import Field
 from langchain.schema import AgentAction, BasePromptTemplate
