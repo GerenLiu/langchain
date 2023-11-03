@@ -15,6 +15,7 @@ from langchain.prompts.chat import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
+    AIMessagePromptTemplate,
 )
 from langchain.pydantic_v1 import Field
 from langchain.schema import AgentAction, BasePromptTemplate
@@ -69,6 +70,7 @@ class ChatAgent(Agent):
     @classmethod
     def create_prompt(
         cls,
+        llm: BaseLanguageModel,
         tools: Sequence[BaseTool],
         system_message_prefix: str = SYSTEM_MESSAGE_PREFIX,
         system_message_suffix: str = SYSTEM_MESSAGE_SUFFIX,
@@ -87,10 +89,18 @@ class ChatAgent(Agent):
                 system_message_suffix,
             ]
         )
-        messages = [
-            SystemMessagePromptTemplate.from_template(template),
-            HumanMessagePromptTemplate.from_template(human_message),
-        ]
+
+        if "ERNIE" in llm.model_name:
+            messages = [
+                HumanMessagePromptTemplate.from_template(template),
+                AIMessagePromptTemplate.from_template("YES, I Know."),
+                HumanMessagePromptTemplate.from_template(human_message),
+            ]
+        else:
+            messages = [
+                SystemMessagePromptTemplate.from_template(template),
+                HumanMessagePromptTemplate.from_template(human_message),
+            ]
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         return ChatPromptTemplate(input_variables=input_variables, messages=messages)
@@ -112,6 +122,7 @@ class ChatAgent(Agent):
         """Construct an agent from an LLM and tools."""
         cls._validate_tools(tools)
         prompt = cls.create_prompt(
+            llm,
             tools,
             system_message_prefix=system_message_prefix,
             system_message_suffix=system_message_suffix,

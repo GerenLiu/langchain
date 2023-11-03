@@ -18,6 +18,7 @@ from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
     MessagesPlaceholder,
     SystemMessagePromptTemplate,
+    AIMessagePromptTemplate,
 )
 from langchain.pydantic_v1 import Field
 from langchain.schema import AgentAction, BaseOutputParser, BasePromptTemplate
@@ -58,6 +59,7 @@ class ConversationalChatAgent(Agent):
     @classmethod
     def create_prompt(
         cls,
+        llm: BaseLanguageModel,
         tools: Sequence[BaseTool],
         system_message: str = PREFIX,
         human_message: str = SUFFIX,
@@ -77,12 +79,22 @@ class ConversationalChatAgent(Agent):
         )
         if input_variables is None:
             input_variables = ["input", "chat_history", "agent_scratchpad"]
-        messages = [
-            SystemMessagePromptTemplate.from_template(system_message),
-            MessagesPlaceholder(variable_name="chat_history"),
-            HumanMessagePromptTemplate.from_template(final_prompt),
-            MessagesPlaceholder(variable_name="agent_scratchpad"),
-        ]
+        
+        if "ERNIE" in llm.model_name:
+            messages = [
+                HumanMessagePromptTemplate.from_template(system_message),
+                AIMessagePromptTemplate.from_template("YES, I Know."),
+                MessagesPlaceholder(variable_name="chat_history"),
+                HumanMessagePromptTemplate.from_template(final_prompt),
+                MessagesPlaceholder(variable_name="agent_scratchpad"),
+            ]
+        else:
+            messages = [
+                SystemMessagePromptTemplate.from_template(system_message),
+                MessagesPlaceholder(variable_name="chat_history"),
+                HumanMessagePromptTemplate.from_template(final_prompt),
+                MessagesPlaceholder(variable_name="agent_scratchpad"),
+            ]
         return ChatPromptTemplate(input_variables=input_variables, messages=messages)
 
     def _construct_scratchpad(
@@ -114,6 +126,7 @@ class ConversationalChatAgent(Agent):
         cls._validate_tools(tools)
         _output_parser = output_parser or cls._get_default_output_parser()
         prompt = cls.create_prompt(
+            llm,
             tools,
             system_message=system_message,
             human_message=human_message,

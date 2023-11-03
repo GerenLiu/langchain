@@ -12,6 +12,7 @@ from langchain.prompts.chat import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
+    AIMessagePromptTemplate,
 )
 from langchain.pydantic_v1 import Field
 from langchain.schema import AgentAction, BasePromptTemplate
@@ -71,6 +72,7 @@ class StructuredChatAgent(Agent):
     @classmethod
     def create_prompt(
         cls,
+        llm: BaseLanguageModel,
         tools: Sequence[BaseTool],
         prefix: str = PREFIX,
         suffix: str = SUFFIX,
@@ -90,11 +92,20 @@ class StructuredChatAgent(Agent):
         if input_variables is None:
             input_variables = ["input", "agent_scratchpad"]
         _memory_prompts = memory_prompts or []
-        messages = [
-            SystemMessagePromptTemplate.from_template(template),
-            *_memory_prompts,
-            HumanMessagePromptTemplate.from_template(human_message_template),
-        ]
+        
+        if "ERNIE" in llm.model_name:
+            messages = [
+                HumanMessagePromptTemplate.from_template(template),
+                AIMessagePromptTemplate.from_template("YES, I Know."),
+                *_memory_prompts,
+                HumanMessagePromptTemplate.from_template(human_message_template),
+            ]
+        else:
+            messages = [
+                SystemMessagePromptTemplate.from_template(template),
+                *_memory_prompts,
+                HumanMessagePromptTemplate.from_template(human_message_template),
+            ]
         return ChatPromptTemplate(input_variables=input_variables, messages=messages)
 
     @classmethod
@@ -116,6 +127,7 @@ class StructuredChatAgent(Agent):
         cls._validate_tools(tools)
         prompt = cls.create_prompt(
             tools,
+            llm,
             prefix=prefix,
             suffix=suffix,
             human_message_template=human_message_template,
