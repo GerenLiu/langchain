@@ -60,7 +60,7 @@ class ConversationalChatAgent(Agent):
     def create_prompt(
         cls,
         tools: Sequence[BaseTool],
-        llm: BaseLanguageModel,
+        llm: Optional[BaseLanguageModel] = None,
         system_message: str = PREFIX,
         human_message: str = SUFFIX,
         input_variables: Optional[List[str]] = None,
@@ -79,7 +79,7 @@ class ConversationalChatAgent(Agent):
         )
         if input_variables is None:
             input_variables = ["input", "chat_history", "agent_scratchpad"]
-        if hasattr(llm, "model_name") and "ERNIE" in llm.model_name:
+        if llm and hasattr(llm, "model_name") and "ERNIE" in llm.model_name:
             messages = [
                 HumanMessagePromptTemplate.from_template(system_message),
                 AIMessagePromptTemplate.from_template("YES, I Know."),

@@ -71,7 +71,7 @@ class ChatAgent(Agent):
     def create_prompt(
         cls,
         tools: Sequence[BaseTool],
-        llm: BaseLanguageModel,
+        llm: Optional[BaseLanguageModel] = None,
         system_message_prefix: str = SYSTEM_MESSAGE_PREFIX,
         system_message_suffix: str = SYSTEM_MESSAGE_SUFFIX,
         human_message: str = HUMAN_MESSAGE,
@@ -89,7 +89,7 @@ class ChatAgent(Agent):
                 system_message_suffix,
             ]
         )
-        if hasattr(llm, "model_name") and "ERNIE" in llm.model_name:
+        if llm and hasattr(llm, "model_name") and "ERNIE" in llm.model_name:
             messages = [
                 HumanMessagePromptTemplate.from_template(template),
                 AIMessagePromptTemplate.from_template("YES, I Know."),
