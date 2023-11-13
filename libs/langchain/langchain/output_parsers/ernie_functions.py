@@ -72,7 +72,7 @@ class JsonOutputFunctionsParser(BaseCumulativeTransformOutputParser[Any]):
                 "This output parser can only be used with a chat generation."
             )
         message = generation.message
-        if 'function_call' in message.content:
+        if 'function_call' in message.content and message.content is not None:
             function_call = json.loads(message.content)
             if 'function_call' in function_call:
                 fc = function_call["function_call"]
